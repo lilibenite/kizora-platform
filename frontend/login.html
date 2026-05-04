@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-     <title>Login - KIZORA</title>
-      <style>
+    <title>Login - KIZORA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Syne:wght@400;600&display=swap" rel="stylesheet">
+    <style>
         body {
             margin: 0;
-            font-family: Arial;
+            font-family: 'Syne', sans-serif;
             background: linear-gradient(to bottom, #0b0f1a, #02040a);
             color: white;
             display: flex;
@@ -17,50 +16,146 @@
             align-items: center;
             height: 100vh;
         }
+
         .login-box {
-            background: #111;
-            padding: 40px;
-            border-radius: 10px;
-            width: 300px;
+            background: #0d1120;
+            border: 1px solid #1a2240;
+            padding: 48px 40px;
+            border-radius: 16px;
+            width: 320px;
             text-align: center;
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            background: linear-gradient(90deg, #1e90ff, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-sub {
+            font-size: 0.6rem;
+            letter-spacing: 2px;
+            color: #6272a4;
+            display: block;
+            margin-bottom: 30px;
         }
 
         input {
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 5px;
+            padding: 12px;
+            margin: 8px 0;
+            background: #070a14;
+            border: 1px solid #1a2240;
+            border-radius: 8px;
+            color: white;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #1e90ff;
+        }
+
+        input::placeholder { color: #3a4a6a; }
+
+        .error-msg {
+            color: #ff5555;
+            font-size: 0.8rem;
+            margin: 6px 0 0;
+            display: none;
         }
 
         .btn {
             width: 100%;
-            padding: 10px;
-            background: #1e90ff;
+            padding: 13px;
+            margin-top: 14px;
+            background: linear-gradient(90deg, #1e90ff, #00d4ff);
             border: none;
             color: white;
             cursor: pointer;
-            border-radius: 5px;
+            border-radius: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            transition: opacity 0.2s;
         }
 
-        h2 {
-            margin-bottom: 20px;
-        }
-  
-      </style>
+        .btn:hover { opacity: 0.85; }
 
-    </head>
+        .footer-text {
+            margin-top: 24px;
+            font-size: 0.65rem;
+            color: #3a4a6a;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
 
 <body>
 
 <div class="login-box">
-    <h2>KIZORA Login</h2>
+    <div class="logo">KIZORA</div>
+    <span class="logo-sub">INSTITUTE OF SPACE & TECHNOLOGY</span>
 
-    <input type="text" placeholder="Username">
-    <input type="password" placeholder="Password">
-
-    <button class="btn">Login</button>
-</div>    
+    <input id="username" placeholder="username">
+    <input id="password" type="password" placeholder="Password">
     
+     
+    <p id="error-msg" class="error-msg"></p>
+
+    <button class="btn" onclick="login()">LAUNCH →</button>
+
+
+    <p style="margin-top:10px;">
+       Don't have an account? <a href="signup.html">Sign up</a>
+    </p>
+    
+    <div class="footer-text">Founded by TWAGIRAYO Lili Benite</div>
+</div>
+
+<script>
+async function login() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const errorMsg = document.getElementById("error-msg");
+
+    errorMsg.style.display = "none";
+
+    if (!username || !password) {
+        errorMsg.textContent = "Please enter username and password.";
+        errorMsg.style.display = "block";
+        return;
+    }
+
+    try {
+        const response = await fetch("http://127.0.0.1:8001/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        });
+
+        const data = await response.json();
+
+        if (data.status === "success") {
+            sessionStorage.setItem("kizora_user", username);
+            window.location.href = "courses.html";
+        } else {
+            errorMsg.textContent = "Invalid username or password.";
+            errorMsg.style.display = "block";
+        }
+
+    } catch (error) {
+        errorMsg.textContent = "Cannot reach server. Is it running?";
+        errorMsg.style.display = "block";
+    }
+}
+</script>
+
 </body>
 </html>

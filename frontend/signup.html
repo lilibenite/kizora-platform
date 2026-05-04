@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sign Up - KIZORA</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Syne:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Syne', sans-serif;
+    background: linear-gradient(to bottom, #0b0f1a, #02040a);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.signup-box {
+    background: #0d1120;
+    border: 1px solid #1a2240;
+    padding: 48px 40px;
+    border-radius: 16px;
+    width: 320px;
+    text-align: center;
+}
+
+.logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 900;
+    letter-spacing: 4px;
+    background: linear-gradient(90deg, #1e90ff, #00d4ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.logo-sub {
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    color: #6272a4;
+    display: block;
+    margin-bottom: 30px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    background: #070a14;
+    border: 1px solid #1a2240;
+    border-radius: 8px;
+    color: white;
+}
+
+.btn {
+    width: 100%;
+    padding: 13px;
+    margin-top: 14px;
+    background: linear-gradient(90deg, #1e90ff, #00d4ff);
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 8px;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 2px;
+}
+
+.msg {
+    margin-top: 10px;
+    font-size: 0.8rem;
+}
+</style>
+</head>
+
+<body>
+
+<div class="signup-box">
+    <div class="logo">KIZORA</div>
+    <span class="logo-sub">CREATE ACCOUNT</span>
+
+    <input id="username" placeholder="Username">
+    <input id="password" type="password" placeholder="Password">
+
+    <p id="msg" class="msg"></p>
+
+    <button class="btn" onclick="signup()">CREATE →</button>
+
+    <p style="margin-top:15px;">
+        Already have an account? <a href="login.html">Login</a>
+    </p>
+</div>
+
+<script>
+async function signup() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    const response = await fetch("http://127.0.0.1:8001/register", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ username, password })
+    });
+
+    const data = await response.json();
+
+    document.getElementById("msg").innerText = data.message;
+
+    if (data.status === "success") {
+        setTimeout(() => {
+            window.location.href = "login.html";
+        }, 1000);
+    }
+}
+</script>
+
+</body>
+</html>

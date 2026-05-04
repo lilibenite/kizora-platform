@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>KIZORA Dashboard</title>
+
+<style>
+body {
+    background: #02040a;
+    color: white;
+    font-family: Syne;
+    margin: 0;
+}
+
+header {
+    padding: 20px;
+    background: #0d1120;
+    font-family: Orbitron;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+}
+
+.container {
+    padding: 20px;
+}
+
+.card {
+    background: #0d1120;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: 1px solid #1a2240;
+}
+
+.progress-bar {
+    height: 10px;
+    background: #1a2240;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress {
+    height: 10px;
+    background: linear-gradient(90deg,#1e90ff,#00d4ff);
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div>KIZORA DASHBOARD</div>
+    <button onclick="logout()">Logout</button>
+</header>
+
+<div class="container">
+
+<h2>📊 Your Progress</h2>
+
+<div id="progressList"></div>
+
+</div>
+
+<script>
+const courses = [
+"Advanced Mathematics",
+"Physics: Forces & Motion",
+"Astronomy & Space",
+"Satellite Engineering",
+"Intro to AI",
+"Earth & Climate Science"
+];
+
+function loadProgress(){
+    const container = document.getElementById("progressList");
+
+    courses.forEach(course => {
+
+        let progress = localStorage.getItem(course) || 0;
+
+        let div = document.createElement("div");
+        div.className = "card";
+
+        div.innerHTML = `
+            <h3>${course}</h3>
+            <div class="progress-bar">
+                <div class="progress" style="width:${progress}%"></div>
+            </div>
+            <p>${progress}% completed</p>
+        `;
+
+        container.appendChild(div);
+    });
+}
+
+function logout(){
+    localStorage.clear();
+    window.location.href = "login.html";
+}
+
+loadProgress();
+</script>
+
+</body>
+</html>

@@ -1,37 +1,445 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Courses - KIZORA</title>
-
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Syne:wght@400;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg: #02040a;
+            --card: #0d1120;
+            --border: #1a2240;
+            --blue: #1e90ff;
+            --cyan: #00d4ff;
+            --gold: #f0c040;
+            --green: #00e5a0;
+            --purple: #a259ff;
+            --text: #e8eaf6;
+            --muted: #6272a4;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: Arial;
-            background: #0b0f1a;
-            color: white;
+            font-family: 'Syne', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.6) 0%, transparent 100%),
+                radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.4) 0%, transparent 100%),
+                radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,0.5) 0%, transparent 100%),
+                radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.3) 0%, transparent 100%),
+                radial-gradient(1px 1px at 90% 40%, rgba(255,255,255,0.6) 0%, transparent 100%),
+                radial-gradient(1px 1px at 20% 90%, rgba(255,255,255,0.4) 0%, transparent 100%),
+                radial-gradient(1px 1px at 80% 15%, rgba(255,255,255,0.5) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 40px;
+            background: rgba(2, 4, 10, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 1.4rem;
+            letter-spacing: 3px;
+            background: linear-gradient(90deg, var(--blue), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo span {
+            font-size: 0.55rem;
+            display: block;
+            letter-spacing: 2px;
+            font-weight: 400;
+            background: linear-gradient(90deg, var(--muted), var(--text));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-top: -4px;
+        }
+
+        .nav-right { display: flex; align-items: center; gap: 20px; }
+
+        .nav-user { font-size: 0.85rem; color: var(--muted); }
+        .nav-user strong { color: var(--cyan); }
+
+        .logout-btn {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.8rem;
+            padding: 7px 18px;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            border-radius: 4px;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover { border-color: var(--blue); color: var(--blue); }
+
+        .hero {
+            position: relative;
+            z-index: 1;
+            padding: 60px 40px 30px;
             text-align: center;
         }
 
-        h1 {
-            margin-top: 50px;
+        .hero-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            color: var(--cyan);
+            border: 1px solid rgba(0,212,255,0.3);
+            padding: 5px 16px;
+            border-radius: 20px;
+            margin-bottom: 20px;
         }
 
-        .course {
-            background: #111;
-            margin: 20px auto;
-            padding: 20px;
-            width: 300px;
-            border-radius: 10px;
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #fff 0%, var(--cyan) 60%, var(--blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 14px;
         }
+
+        .hero p {
+            color: var(--muted);
+            font-size: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .filter-bar {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            padding: 30px 40px 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            padding: 8px 20px;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--blue);
+            border-color: var(--blue);
+            color: white;
+        }
+
+        .courses-grid {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+            padding: 30px 40px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .course-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            animation: fadeUp 0.5s ease both;
+        }
+
+        .course-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--blue);
+            box-shadow: 0 0 30px rgba(30,144,255,0.15);
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .course-card:nth-child(1) { animation-delay: 0.05s; }
+        .course-card:nth-child(2) { animation-delay: 0.10s; }
+        .course-card:nth-child(3) { animation-delay: 0.15s; }
+        .course-card:nth-child(4) { animation-delay: 0.20s; }
+        .course-card:nth-child(5) { animation-delay: 0.25s; }
+        .course-card:nth-child(6) { animation-delay: 0.30s; }
+
+        .card-banner {
+            height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .card-body { padding: 20px; }
+
+        .card-category {
+            font-size: 0.68rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .card-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .card-desc {
+            font-size: 0.83rem;
+            color: var(--muted);
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--muted);
+            border-top: 1px solid var(--border);
+            padding-top: 14px;
+        }
+
+        .card-level {
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .level-beginner     { background: rgba(0,229,160,0.15); color: var(--green); }
+        .level-intermediate { background: rgba(30,144,255,0.15); color: var(--blue); }
+        .level-advanced     { background: rgba(162,89,255,0.15); color: var(--purple); }
+
+        .enroll-btn {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.78rem;
+            padding: 8px 20px;
+            background: linear-gradient(90deg, var(--blue), var(--cyan));
+            border: none;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 14px;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        .enroll-btn:hover { opacity: 0.85; transform: scale(1.02); }
+
+        .banner-math    { background: linear-gradient(135deg, #0b1a3a, #1e3a6e); }
+        .banner-science { background: linear-gradient(135deg, #0a2a1a, #0d5c35); }
+        .banner-space   { background: linear-gradient(135deg, #0a0a2a, #1a0a4a); }
+        .banner-ai      { background: linear-gradient(135deg, #1a0a2a, #3a0a5a); }
+        .banner-earth   { background: linear-gradient(135deg, #0a1a0a, #1a3a1a); }
+
+        footer {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 20px;
+            color: var(--muted);
+            font-size: 0.75rem;
+            border-top: 1px solid var(--border);
+            letter-spacing: 1px;
+        }
+
+        footer strong { color: var(--cyan); }
     </style>
 </head>
-
+   
+   <script src="js/lessons.js"></script>
+   <script src="js/courses.js"></script>
+   <script src="js/lesson.js"></script>
+   <script src="js/progress.js"></script>
 <body>
 
-<h1>KIZORA Courses</h1>
+<nav>
+    <div class="logo">
+        KIZORA
+        <span>Institute of Space & Technology</span>
+    </div>
+    <div class="nav-right">
+        <div class="nav-user">Welcome, <strong id="nav-username">Student</strong></div>
+        <button class="logout-btn" onclick="logout()">LOGOUT</button>
+    </div>
+    
+</nav>
 
-<div class="course">Introduction to Space</div>
-<div class="course">Rocket Science Basics</div>
-<div class="course">Satellites and Orbits</div>
+<div class="hero">
+    <div class="hero-tag">🚀 KIZORA Learning Platform</div>
+    <h1>Explore Your Courses</h1>
+    <p>World-class education in science, technology, and space exploration — designed for Africa's next generation.</p>
+</div>
+
+<div class="filter-bar">
+    <button class="filter-btn active" onclick="filterCourses('all', this)">All Courses</button>
+    <button class="filter-btn" onclick="filterCourses('math', this)">Mathematics</button>
+    <button class="filter-btn" onclick="filterCourses('science', this)">Science</button>
+    <button class="filter-btn" onclick="filterCourses('space', this)">Space</button>
+    <button class="filter-btn" onclick="filterCourses('ai', this)">AI & Technology</button>
+</div>
+
+<div class="courses-grid" id="courses-grid">
+
+    <div class="course-card" data-category="math">
+        <div class="card-banner banner-math">📐</div>
+        <div class="card-body">
+            <div class="card-category" style="color: var(--blue)">Mathematics</div>
+            <div class="card-title">Advanced Mathematics & Calculus</div>
+            <div class="card-desc">Master algebra, calculus, and mathematical reasoning — the language of science and engineering.</div>
+            <div class="card-meta">
+                <span>12 Lessons · 8h</span>
+                <span class="card-level level-intermediate">Intermediate</span>
+            </div>
+            <button class="enroll-btn" onclick="enroll('Advanced Mathematics')">Start Learning →</button>
+        </div>
+    </div>
+
+    <div class="course-card" data-category="science">
+        <div class="card-banner banner-science">⚗️</div>
+        <div class="card-body">
+            <div class="card-category" style="color: var(--green)">Science</div>
+            <div class="card-title">Physics: Forces & Motion</div>
+            <div class="card-desc">Understand how the universe moves — from Newton's laws to the physics of rockets and satellites.</div>
+            <div class="card-meta">
+                <span>10 Lessons · 6h</span>
+                <span class="card-level level-beginner">Beginner</span>
+            </div>
+            <button class="enroll-btn" onclick="enroll('Physics')">Start Learning →</button>
+        </div>
+    </div>
+
+    <div class="course-card" data-category="space">
+        <div class="card-banner banner-space">🛸</div>
+        <div class="card-body">
+            <div class="card-category" style="color: var(--purple)">Space Science</div>
+            <div class="card-title">Astronomy & Space Exploration</div>
+            <div class="card-desc">Explore the cosmos — planets, stars, black holes, and the future of human space travel.</div>
+            <div class="card-meta">
+                <span>15 Lessons · 10h</span>
+                <span class="card-level level-beginner">Beginner</span>
+            </div>
+            <button class="enroll-btn" onclick="enroll('Astronomy')">Start Learning →</button>
+        </div>
+    </div>
+
+    <div class="course-card" data-category="space">
+        <div class="card-banner banner-space">🛰️</div>
+        <div class="card-body">
+            <div class="card-category" style="color: var(--purple)">Space Science</div>
+            <div class="card-title">Satellite Engineering Fundamentals</div>
+            <div class="card-desc">Learn how satellites are designed, launched, and used — from communication to Earth observation.</div>
+            <div class="card-meta">
+                <span>18 Lessons · 14h</span>
+                <span class="card-level level-advanced">Advanced</span>
+            </div>
+            <button class="enroll-btn" onclick="enroll('Satellite Engineering')">Start Learning →</button>
+        </div>
+    </div>
+
+    <div class="course-card" data-category="ai">
+        <div class="card-banner banner-ai">🤖</div>
+        <div class="card-body">
+            <div class="card-category" style="color: var(--gold)">AI & Technology</div>
+            <div class="card-title">Introduction to Artificial Intelligence</div>
+            <div class="card-desc">Discover how AI works — machine learning, neural networks, and how to build your first AI model.</div>
+            <div class="card-meta">
+                <span>14 Lessons · 9h</span>
+                <span class="card-level level-intermediate">Intermediate</span>
+            </div>
+            <button class="enroll-btn" onclick="enroll('AI Introduction')">Start Learning →</button>
+        </div>
+    </div>
+
+    <div class="course-card" data-category="science">
+        <div class="card-banner banner-earth">🌍</div>
+        <div class="card-body">
+            <div class="card-category" style="color: var(--green)">Science</div>
+            <div class="card-title">Earth Observation & Climate Science</div>
+            <div class="card-desc">Analyze real satellite data from NASA and ESA to understand climate change and the environment.</div>
+            <div class="card-meta">
+                <span>11 Lessons · 7h</span>
+                <span class="card-level level-intermediate">Intermediate</span>
+            </div>
+            <button class="enroll-btn" onclick="enroll('Earth Observation')">Start Learning →</button>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <strong>KIZORA</strong> Institute of Space & Technology · Founded by TWAGIRAYO Lili Benite
+</footer>
+
+<script>
+    const username = sessionStorage.getItem("kizora_user") || "Student";
+    document.getElementById("nav-username").textContent = username;
+
+    function logout() {
+        sessionStorage.removeItem("kizora_user");
+        window.location.href = "login.html";
+    }
+
+    function filterCourses(category, btn) {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.course-card').forEach(card => {
+            card.style.display = (category === 'all' || card.dataset.category === category) ? 'block' : 'none';
+        });
+    }
+
+    function enroll(courseName) {
+        alert("Enrolling in: " + courseName + "\n\nComing soon! 🚀");
+    }
+</script>
 
 </body>
 </html>

@@ -414,6 +414,10 @@
     </style>
 </head>
    
+   <script src="js/lessons.js"></script>
+   <script src="js/courses.js"></script>
+   <script src="js/lesson.js"></script>
+   <script src="js/progress.js"></script>
 <body>
 
 <div class="stars" id="stars"></div>
@@ -602,33 +606,22 @@
 </footer>
 
 <script>
-    
 
     const starsContainer = document.getElementById('stars');
-
-if (starsContainer) {
-    const starCount = Math.min(120, Math.floor(window.innerWidth / 10));
-
-    for (let i = 0; i < starCount; i++) {
+    for (let i = 0; i < 150; i++) {
         const star = document.createElement('div');
         star.classList.add('star');
-
-        const size = Math.random() * 2 + 0.3;
-        const opacity = Math.random() * 0.8 + 0.2;
-
+        const size = Math.random() * 2 + 0.5;
         star.style.cssText = `
             width: ${size}px;
             height: ${size}px;
             top: ${Math.random() * 100}%;
             left: ${Math.random() * 100}%;
-            opacity: ${opacity};
-            --d: ${Math.random() * 4 + 2}s;
-            animation-delay: ${Math.random() * 4}s;
+            --d: ${Math.random() * 3 + 2}s;
+            animation-delay: ${Math.random() * 3}s;
         `;
-
         starsContainer.appendChild(star);
     }
-}
 </script>
 
 </body>
